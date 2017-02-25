@@ -1,0 +1,9 @@
+<ul class="{{ menu.class }}">
+  {% for item in menu.items %}
+    {% if item.items|length %}
+      {% include 'MenuBundle:Menu:items.html.twig' with {'items': item.items} %}
+    {% else %}
+      {% include 'MenuBundle:Menu:item.html.twig' %}
+    {% endif %}
+  {% endfor %}
+</ul>

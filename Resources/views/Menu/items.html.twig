@@ -1,0 +1,21 @@
+{% if not item.credentials or is_granted(item.credentials) %}
+  <li class="treeview {{ item.class }} {% if item.selected %}active{% endif %}">
+    <a href="{{ item.link }}">
+      {% if item.icon %}
+        <i class="{{ item.icon }}" aria-hidden="true"></i>
+      {% else %}
+        <i class="fa fa fa-folder" aria-hidden="true"></i>
+      {% endif %}
+      {{ item.name|trans }}
+      <span class="pull-right-container">
+      <i class="fa fa-angle-left pull-right" aria-hidden="true" style="margin-right: 5px"> </i>
+      <span class="sr-only">Expand</span>
+    </span>
+      <ul class="treeview-menu">
+        {% for item in item.items %}
+          {% include 'MenuBundle:Menu:item.html.twig' %}
+        {% endfor %}
+      </ul>
+    </a>
+  </li>
+{% endif %}
