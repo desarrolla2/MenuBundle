@@ -15,10 +15,14 @@ namespace Desarrolla2\MenuBundle\Twig;
 
 use Desarrolla2\MenuBundle\Menu\MenuInterface;
 use Symfony\Bundle\FrameworkBundle\Routing\Router;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 class MenuExtension extends \Twig_Extension
 {
+    /** @var ContainerInterface */
+    private $container;
+
     /** @var \Twig_Environment */
     private $twig;
 
@@ -33,39 +37,37 @@ class MenuExtension extends \Twig_Extension
     /**
      * @param Router $router
      */
-    public function __construct(\Twig_Environment $twig, Router $router, RequestStack $requestStack)
+    public function __construct(ContainerInterface $container)
     {
-        $this->twig = $twig;
-        $this->router = $router;
-        $request = $requestStack->getCurrentRequest();
+        $this->container = $container;
+        $this->twig = $container->get('twig');
+        $this->router = $container->get('router');
+        $request = $container->get('request_stack')->getCurrentRequest();
         if ($request) {
             $this->route = $request->get('_route');
         }
     }
 
-    public function render($class, $template)
+    public function render($serviceOrClassName, $template)
     {
-        if (!class_exists($class)) {
-            throw new \InvalidArgumentException(
-                sprintf('Class "%s" not exist', $class)
-            );
+        if ($this->container->has($serviceOrClassName)) {
+            $builder = $this->container->get($serviceOrClassName);
+        } else {
+            if (!class_exists($serviceOrClassName)) {
+                throw new \InvalidArgumentException(sprintf('Class "%s" not exist', $serviceOrClassName));
+            }
+
+            $builder = new $serviceOrClassName();
         }
 
-        $builder = new $class();
-
         if (!$builder instanceof MenuInterface) {
-            throw new \InvalidArgumentException(
-                sprintf('Class "%s" not implements MenuInterface', $class)
-            );
+            throw new \InvalidArgumentException(sprintf('Class "%s" not implements MenuInterface', $serviceOrClassName));
         }
 
         $menu = $builder->getMenu();
         $menu = $this->prepareMenu($menu);
 
-        return $this->twig->render(
-            sprintf('MenuBundle:Menu:%s.html.twig', $template),
-            ['menu' => $menu]
-        );
+        return $this->twig->render(sprintf('MenuBundle:Menu:%s.html.twig', $template), ['menu' => $menu]);
     }
 
     /**
@@ -75,6 +77,9 @@ class MenuExtension extends \Twig_Extension
      */
     protected function prepareMenu($menu)
     {
+        $disabledContents = $this->container->getParameter('app.disabled.contents');
+
+
         $this->selected = false;
         $required = ['class', 'items'];
         foreach ($required as $r) {
@@ -91,16 +96,26 @@ class MenuExtension extends \Twig_Extension
         }
 
         foreach ($menu['items'] as $i => $j) {
-            $menu['items'][$i] = $this->prepareItem($j);
-            if (count($menu['items'][$i]['items'])) {
-                foreach ($menu['items'][$i]['items'] as $x => $y) {
-                    $menu['items'][$i]['items'][$x] = $this->prepareItem($y);
-                    if ($menu['items'][$i]['items'][$x]['selected']) {
-                        $menu['items'][$i]['selected'] = true;
+            if(
+                (isset($j['context']) && $j['context']  == 'contents' && $disabledContents == false) ||
+                (!isset($j['context']))
+            ) {
+                $menu['items'][$i] = $this->prepareItem($j);
+                if (count($menu['items'][$i]['items'])) {
+                    foreach ($menu['items'][$i]['items'] as $x => $y) {
+
+                        $menu['items'][$i]['items'][$x] = $this->prepareItem($y);
+                        if ($menu['items'][$i]['items'][$x]['selected']) {
+                            $menu['items'][$i]['selected'] = true;
+                        }
+
                     }
                 }
+            }else{
+                unset($menu['items'][$i]);
             }
         }
+
 
         return $menu;
     }
@@ -170,12 +185,7 @@ class MenuExtension extends \Twig_Extension
 
     public function getFunctions()
     {
-        return [
-            new \Twig_SimpleFunction(
-                'renderMenu', [$this, 'render'],
-                ['is_safe' => ['html']]
-            ),
-        ];
+        return [new \Twig_SimpleFunction('renderMenu', [$this, 'render'], ['is_safe' => ['html']]),];
     }
 
     /**
