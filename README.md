@@ -99,8 +99,16 @@ class MainMenu implements MenuInterface
 ```
 
 
+## Render
+
 To actually render the menu, just do the following from anywhere in any template:
 
 ```html+jinja
 {{ renderMenu('TeacherBundle\\Menu\\MainMenu','sidebar') }}
+```
+
+If you are defined your menu as a service, you can render as follow:
+
+```html+jinja
+{{ renderMenu('my.menu.service.name','sidebar') }}
 ```
