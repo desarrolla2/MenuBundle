@@ -16,7 +16,6 @@ namespace Desarrolla2\MenuBundle\Twig;
 use Desarrolla2\MenuBundle\Menu\MenuInterface;
 use Symfony\Bundle\FrameworkBundle\Routing\Router;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\HttpFoundation\RequestStack;
 
 class MenuExtension extends \Twig_Extension
 {
@@ -61,7 +60,9 @@ class MenuExtension extends \Twig_Extension
         }
 
         if (!$builder instanceof MenuInterface) {
-            throw new \InvalidArgumentException(sprintf('Class "%s" not implements MenuInterface', $serviceOrClassName));
+            throw new \InvalidArgumentException(
+                sprintf('Class "%s" not implements MenuInterface', $serviceOrClassName)
+            );
         }
 
         $menu = $builder->getMenu();
@@ -96,8 +97,8 @@ class MenuExtension extends \Twig_Extension
         }
 
         foreach ($menu['items'] as $i => $j) {
-            if(
-                (isset($j['context']) && $j['context']  == 'contents' && $disabledContents == false) ||
+            if (
+                (isset($j['context']) && $j['context'] == 'contents' && $disabledContents == false) ||
                 (!isset($j['context']))
             ) {
                 $menu['items'][$i] = $this->prepareItem($j);
@@ -111,11 +112,10 @@ class MenuExtension extends \Twig_Extension
 
                     }
                 }
-            }else{
+            } else {
                 unset($menu['items'][$i]);
             }
         }
-
 
         return $menu;
     }
@@ -141,9 +141,22 @@ class MenuExtension extends \Twig_Extension
             }
         }
 
+        foreach ($item['items'] as $key => $value) {
+            $item['items'][$key] = $this->prepareItem($value);
+            if ($item['items'][$key]['selected']) {
+                $item['selected'] = true;
+            }
+        }
+
         $item['link'] = '#';
         if ($item['route']) {
             $item['link'] = $this->router->generate($item['route']);
+        }
+
+        if (array_key_exists('selected', $item)) {
+            if ($item['selected']) {
+                return $item;
+            }
         }
 
         $item['selected'] = $this->isSelected($item);
@@ -167,11 +180,13 @@ class MenuExtension extends \Twig_Extension
 
             return true;
         }
+
         if (in_array($this->route, $item['active'])) {
             $this->selected = true;
 
             return true;
         }
+
         foreach ($item['active'] as $active) {
             if (preg_match(sprintf('#%s#', $active), $this->route) === 1) {
                 $this->selected = true;
