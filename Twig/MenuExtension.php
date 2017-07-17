@@ -31,17 +31,14 @@ class MenuExtension extends \Twig_Extension
     /** @var string */
     private $route = false;
 
+    /** @var bool */
     private $selected = false;
 
-    /**
-     * @param Router $router
-     */
-    public function __construct(ContainerInterface $container)
+    public function __construct(\Twig_Environment $twig, Router $router, RequestStack $requestStack)
     {
-        $this->container = $container;
-        $this->twig = $container->get('twig');
-        $this->router = $container->get('router');
-        $request = $container->get('request_stack')->getCurrentRequest();
+        $this->twig = $twig;
+        $this->router = $router;
+        $request = $requestStack->getCurrentRequest();
         if ($request) {
             $this->route = $request->get('_route');
         }
