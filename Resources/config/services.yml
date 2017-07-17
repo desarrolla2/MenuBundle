@@ -2,6 +2,8 @@ services:
     core.twig.menu_extension:
         class: 'Desarrolla2\MenuBundle\Twig\MenuExtension'
         arguments:
-            - '@service_container'
+            - '@twig'
+            - '@router'
+            - '@request_stack'
         tags:
             - { name: 'twig.extension' }

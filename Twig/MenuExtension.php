@@ -78,9 +78,6 @@ class MenuExtension extends \Twig_Extension
      */
     protected function prepareMenu($menu)
     {
-        $disabledContents = $this->container->getParameter('app.disabled.contents');
-
-
         $this->selected = false;
         $required = ['class', 'items'];
         foreach ($required as $r) {
@@ -97,23 +94,15 @@ class MenuExtension extends \Twig_Extension
         }
 
         foreach ($menu['items'] as $i => $j) {
-            if (
-                (isset($j['context']) && $j['context'] == 'contents' && $disabledContents == false) ||
-                (!isset($j['context']))
-            ) {
-                $menu['items'][$i] = $this->prepareItem($j);
-                if (count($menu['items'][$i]['items'])) {
-                    foreach ($menu['items'][$i]['items'] as $x => $y) {
-
-                        $menu['items'][$i]['items'][$x] = $this->prepareItem($y);
-                        if ($menu['items'][$i]['items'][$x]['selected']) {
-                            $menu['items'][$i]['selected'] = true;
-                        }
-
-                    }
+            $menu['items'][$i] = $this->prepareItem($j);
+            if (count($menu['items'][$i]['items'])) {
+            }
+            foreach ($menu['items'][$i]['items'] as $x => $y) {
+                $menu['items'][$i]['items'][$x] = $this->prepareItem($y);
+                if ($menu['items'][$i]['items'][$x]['selected']) {
+                    $menu['items'][$i]['selected'] = true;
                 }
-            } else {
-                unset($menu['items'][$i]);
+
             }
         }
 
@@ -125,7 +114,7 @@ class MenuExtension extends \Twig_Extension
      *
      * @return array
      */
-    protected function prepareItem($item)
+    protected function prepareItem(array $item)
     {
         $required = ['class', 'anchorClass', 'route', 'icon', 'name', 'items', 'active', 'credentials'];
         foreach ($required as $r) {
@@ -169,7 +158,7 @@ class MenuExtension extends \Twig_Extension
      *
      * @return bool
      */
-    private function isSelected($item)
+    private function isSelected(array $item)
     {
         if ($this->selected) {
             return false;
@@ -198,7 +187,8 @@ class MenuExtension extends \Twig_Extension
         return false;
     }
 
-    public function getFunctions()
+    public
+    function getFunctions()
     {
         return [new \Twig_SimpleFunction('renderMenu', [$this, 'render'], ['is_safe' => ['html']]),];
     }
@@ -206,7 +196,8 @@ class MenuExtension extends \Twig_Extension
     /**
      * @return string
      */
-    public function getName()
+    public
+    function getName()
     {
         return 'core_twig_menu_extension';
     }
