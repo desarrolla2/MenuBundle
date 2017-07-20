@@ -34,11 +34,12 @@ class MenuExtension extends \Twig_Extension
     /** @var bool */
     private $selected = false;
 
-    public function __construct(\Twig_Environment $twig, Router $router, RequestStack $requestStack)
+    public function __construct(ContainerInterface $container)
     {
-        $this->twig = $twig;
-        $this->router = $router;
-        $request = $requestStack->getCurrentRequest();
+        $this->container = $container;
+        $this->twig = $container->get('twig');
+        $this->router = $container->get('router');
+        $request = $container->get('request_stack')->getCurrentRequest();
         if ($request) {
             $this->route = $request->get('_route');
         }
@@ -65,7 +66,11 @@ class MenuExtension extends \Twig_Extension
         $menu = $builder->getMenu();
         $menu = $this->prepareMenu($menu);
 
-        return $this->twig->render(sprintf('MenuBundle:Menu:%s.html.twig', $template), ['menu' => $menu]);
+        if ($this->twig->getLoader()->exists(sprintf('MenuBundle:Menu:%s.html.twig', $template))) {
+            return $this->twig->render(sprintf('MenuBundle:Menu:%s.html.twig', $template), ['menu' => $menu]);
+        }
+
+        return $this->twig->render($template, ['menu' => $menu]);
     }
 
     /**
