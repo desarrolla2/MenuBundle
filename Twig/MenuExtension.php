@@ -118,14 +118,14 @@ class MenuExtension extends \Twig_Extension
      */
     protected function prepareItem(array $item)
     {
-        $required = ['class', 'anchorClass', 'route', 'icon', 'name', 'items', 'active', 'credentials'];
+        $required = ['class', 'anchorClass', 'anchorData', 'route', 'icon', 'name', 'items', 'active', 'credentials'];
         foreach ($required as $r) {
             if (!isset($item[$r])) {
                 $item[$r] = false;
             }
         }
 
-        $arrays = ['items', 'active'];
+        $arrays = ['items', 'active', 'anchorData'];
         foreach ($arrays as $a) {
             if (!is_array($item[$a])) {
                 $item[$a] = [];
