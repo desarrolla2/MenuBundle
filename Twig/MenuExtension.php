@@ -45,7 +45,14 @@ class MenuExtension extends \Twig_Extension
         }
     }
 
-    public function render($serviceOrClassName, $template)
+    /**
+     * @param string $serviceOrClassName
+     * @param string $template
+     * @param array  $parameters
+     *
+     * @return string
+     */
+    public function render(string $serviceOrClassName, string $template, array $parameters = [])
     {
         if ($this->container->has($serviceOrClassName)) {
             $builder = $this->container->get($serviceOrClassName);
@@ -64,7 +71,7 @@ class MenuExtension extends \Twig_Extension
         }
 
         $menu = $builder->getMenu();
-        $menu = $this->prepareMenu($menu);
+        $menu = $this->prepareMenu($menu, $parameters);
 
         if ($this->twig->getLoader()->exists(sprintf('MenuBundle:Menu:%s.html.twig', $template))) {
             return $this->twig->render(sprintf('MenuBundle:Menu:%s.html.twig', $template), ['menu' => $menu]);
@@ -75,10 +82,11 @@ class MenuExtension extends \Twig_Extension
 
     /**
      * @param array $menu
+     * @param array $parameters
      *
      * @return array
      */
-    protected function prepareMenu($menu)
+    protected function prepareMenu(array $menu, array $parameters = [])
     {
         $this->selected = false;
         $required = ['class', 'items'];
@@ -96,15 +104,14 @@ class MenuExtension extends \Twig_Extension
         }
 
         foreach ($menu['items'] as $i => $j) {
-            $menu['items'][$i] = $this->prepareItem($j);
+            $menu['items'][$i] = $this->prepareItem($j, $parameters);
             if (count($menu['items'][$i]['items'])) {
             }
             foreach ($menu['items'][$i]['items'] as $x => $y) {
-                $menu['items'][$i]['items'][$x] = $this->prepareItem($y);
+                $menu['items'][$i]['items'][$x] = $this->prepareItem($y, $parameters);
                 if ($menu['items'][$i]['items'][$x]['selected']) {
                     $menu['items'][$i]['selected'] = true;
                 }
-
             }
         }
 
@@ -116,7 +123,7 @@ class MenuExtension extends \Twig_Extension
      *
      * @return array
      */
-    protected function prepareItem(array $item)
+    protected function prepareItem(array $item, array $parameters = [])
     {
         $required = ['class', 'anchorClass', 'anchorData', 'route', 'icon', 'name', 'items', 'active', 'credentials'];
         foreach ($required as $r) {
@@ -133,7 +140,7 @@ class MenuExtension extends \Twig_Extension
         }
 
         foreach ($item['items'] as $key => $value) {
-            $item['items'][$key] = $this->prepareItem($value);
+            $item['items'][$key] = $this->prepareItem($value, $parameters);
             if ($item['items'][$key]['selected']) {
                 $item['selected'] = true;
             }
@@ -141,7 +148,7 @@ class MenuExtension extends \Twig_Extension
 
         $item['link'] = '#';
         if ($item['route']) {
-            $item['link'] = $this->router->generate($item['route']);
+            $item['link'] = $this->router->generate($item['route'], $parameters);
         }
 
         if (array_key_exists('selected', $item)) {
