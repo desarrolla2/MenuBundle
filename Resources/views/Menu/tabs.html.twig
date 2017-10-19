@@ -1,6 +1,6 @@
 <ul class="menu-tabs list-inline {{ menu.class }}">
   {% for item in menu.items %}
-    {% set item = item|merge({'anchorClass': item.class ~ 'btn btn-app'}) %}
+    {% set item = item|merge({'anchor_class': item.class ~ 'btn btn-app'}) %}
     {% include 'MenuBundle:Menu:item.html.twig' %}
   {% endfor %}
 </ul>
