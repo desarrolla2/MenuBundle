@@ -1,8 +1,8 @@
 {% if not item.credentials or is_granted(item.credentials) %}
   {% spaceless %}
     <li class="{{ item.class }}{% if item.selected %} active{% endif %}{% if loop.first %} first{% endif %}{% if loop.last %} last{% endif %}">
-      <a href="{{ item.link }}" class="{{ item.anchorClass }}"
-         {% for key,value in item.anchorData %}data-{{ key }}="{{ value }}"{% endfor %}>
+      <a href="{{ item.link }}" class="{{ item.anchor_class }}"
+         {% for key,value in item.anchor_data %}data-{{ key }}="{{ value }}"{% endfor %}>
         {% if item.icon %}
           <em class="{{ item.icon }}" aria-hidden="true"></em>
         {% endif %}
