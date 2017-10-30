@@ -40,6 +40,10 @@ class MenuExtension extends \Twig_Extension
     /** @var bool */
     private $selected = false;
 
+    /**
+     * MenuExtension constructor.
+     * @param ContainerInterface $container
+     */
     public function __construct(ContainerInterface $container)
     {
         $this->container = $container;
@@ -51,12 +55,10 @@ class MenuExtension extends \Twig_Extension
         }
     }
 
-<<<<<<< HEAD
-    public
-    function getFunctions()
-=======
+    /**
+     * @return array
+     */
     public function getFunctions()
->>>>>>> 5cde37c3728f20ae4c7988e0c7bd6b83cc7cb689
     {
         return [new \Twig_SimpleFunction('renderMenu', [$this, 'render'], ['is_safe' => ['html']]),];
     }
@@ -64,12 +66,7 @@ class MenuExtension extends \Twig_Extension
     /**
      * @return string
      */
-<<<<<<< HEAD
-    public
-    function getName()
-=======
     public function getName()
->>>>>>> 5cde37c3728f20ae4c7988e0c7bd6b83cc7cb689
     {
         return 'core_twig_menu_extension';
     }
@@ -123,8 +120,6 @@ class MenuExtension extends \Twig_Extension
                 $this->selected = true;
 
                 return true;
-<<<<<<< HEAD
-=======
             }
         }
 
@@ -142,21 +137,16 @@ class MenuExtension extends \Twig_Extension
         } else {
             if (!class_exists($serviceOrClassName)) {
                 throw new \InvalidArgumentException(sprintf('class or service "%s" not exist', $serviceOrClassName));
->>>>>>> 5cde37c3728f20ae4c7988e0c7bd6b83cc7cb689
             }
 
             $builder = new $serviceOrClassName();
         }
 
-<<<<<<< HEAD
-        return false;
-=======
         if ($builder instanceof RequestAwareInterface && $this->request) {
             $builder->setRequest($this->request);
         }
 
         return $builder;
->>>>>>> 5cde37c3728f20ae4c7988e0c7bd6b83cc7cb689
     }
 
     /**
