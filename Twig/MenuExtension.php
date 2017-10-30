@@ -147,6 +147,7 @@ class MenuExtension extends \Twig_Extension
         }
 
         return $builder;
+
     }
 
     /**
@@ -232,11 +233,11 @@ class MenuExtension extends \Twig_Extension
         foreach ($menu['items'] as $i => $j) {
             $menu['items'][$i] = $this->prepareItem($j, $parameters);
             if (count($menu['items'][$i]['items'])) {
-            }
-            foreach ($menu['items'][$i]['items'] as $x => $y) {
-                $menu['items'][$i]['items'][$x] = $this->prepareItem($y, $parameters);
-                if ($menu['items'][$i]['items'][$x]['selected']) {
-                    $menu['items'][$i]['selected'] = true;
+                foreach ($menu['items'][$i]['items'] as $x => $y) {
+                    $menu['items'][$i]['items'][$x] = $this->prepareItem($y, $parameters);
+                    if ($menu['items'][$i]['items'][$x]['selected']) {
+                        $menu['items'][$i]['selected'] = true;
+                    }
                 }
             }
         }
