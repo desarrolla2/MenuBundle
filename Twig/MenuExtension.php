@@ -17,6 +17,7 @@ use Desarrolla2\MenuBundle\Menu\CurrentRouterAwareInterface;
 use Desarrolla2\MenuBundle\Menu\MenuInterface;
 use Desarrolla2\MenuBundle\Menu\RequestAwareInterface;
 use Symfony\Bundle\FrameworkBundle\Routing\Router;
+use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -140,6 +141,10 @@ class MenuExtension extends \Twig_Extension
             }
 
             $builder = new $serviceOrClassName();
+        }
+
+        if ($builder instanceof ContainerAwareInterface && $this->container) {
+            $builder->setContainer($this->container);
         }
 
         if ($builder instanceof RequestAwareInterface && $this->request) {
