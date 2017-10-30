@@ -45,10 +45,25 @@ class MenuExtension extends \Twig_Extension
         }
     }
 
+    public
+    function getFunctions()
+    {
+        return [new \Twig_SimpleFunction('renderMenu', [$this, 'render'], ['is_safe' => ['html']]),];
+    }
+
+    /**
+     * @return string
+     */
+    public
+    function getName()
+    {
+        return 'core_twig_menu_extension';
+    }
+
     /**
      * @param string $serviceOrClassName
      * @param string $template
-     * @param array  $parameters
+     * @param array $parameters
      *
      * @return string
      */
@@ -81,41 +96,37 @@ class MenuExtension extends \Twig_Extension
     }
 
     /**
-     * @param array $menu
-     * @param array $parameters
+     * @param array $item
      *
-     * @return array
+     * @return bool
      */
-    protected function prepareMenu(array $menu, array $parameters = [])
+    private function isSelected(array $item)
     {
-        $this->selected = false;
-        $required = ['class', 'items'];
-        foreach ($required as $r) {
-            if (!isset($menu[$r])) {
-                $menu[$r] = false;
+        if ($this->selected) {
+            return false;
+        }
+
+        if ($this->route == $item['route']) {
+            $this->selected = true;
+
+            return true;
+        }
+
+        if (in_array($this->route, $item['active'])) {
+            $this->selected = true;
+
+            return true;
+        }
+
+        foreach ($item['active'] as $active) {
+            if (preg_match(sprintf('#%s#', $active), $this->route) === 1) {
+                $this->selected = true;
+
+                return true;
             }
         }
 
-        $arrays = ['items'];
-        foreach ($arrays as $a) {
-            if (!is_array($menu[$a])) {
-                $menu[$a] = [];
-            }
-        }
-
-        foreach ($menu['items'] as $i => $j) {
-            $menu['items'][$i] = $this->prepareItem($j, $parameters);
-            if (count($menu['items'][$i]['items'])) {
-            }
-            foreach ($menu['items'][$i]['items'] as $x => $y) {
-                $menu['items'][$i]['items'][$x] = $this->prepareItem($y, $parameters);
-                if ($menu['items'][$i]['items'][$x]['selected']) {
-                    $menu['items'][$i]['selected'] = true;
-                }
-            }
-        }
-
-        return $menu;
+        return false;
     }
 
     /**
@@ -163,51 +174,40 @@ class MenuExtension extends \Twig_Extension
     }
 
     /**
-     * @param array $item
+     * @param array $menu
+     * @param array $parameters
      *
-     * @return bool
+     * @return array
      */
-    private function isSelected(array $item)
+    protected function prepareMenu(array $menu, array $parameters = [])
     {
-        if ($this->selected) {
-            return false;
-        }
-
-        if ($this->route == $item['route']) {
-            $this->selected = true;
-
-            return true;
-        }
-
-        if (in_array($this->route, $item['active'])) {
-            $this->selected = true;
-
-            return true;
-        }
-
-        foreach ($item['active'] as $active) {
-            if (preg_match(sprintf('#%s#', $active), $this->route) === 1) {
-                $this->selected = true;
-
-                return true;
+        $this->selected = false;
+        $required = ['class', 'items'];
+        foreach ($required as $r) {
+            if (!isset($menu[$r])) {
+                $menu[$r] = false;
             }
         }
 
-        return false;
-    }
+        $arrays = ['items'];
+        foreach ($arrays as $a) {
+            if (!is_array($menu[$a])) {
+                $menu[$a] = [];
+            }
+        }
 
-    public
-    function getFunctions()
-    {
-        return [new \Twig_SimpleFunction('renderMenu', [$this, 'render'], ['is_safe' => ['html']]),];
-    }
+        foreach ($menu['items'] as $i => $j) {
+            $menu['items'][$i] = $this->prepareItem($j, $parameters);
+            if (count($menu['items'][$i]['items'])) {
+            }
+            foreach ($menu['items'][$i]['items'] as $x => $y) {
+                $menu['items'][$i]['items'][$x] = $this->prepareItem($y, $parameters);
+                if ($menu['items'][$i]['items'][$x]['selected']) {
+                    $menu['items'][$i]['selected'] = true;
+                }
+            }
+        }
 
-    /**
-     * @return string
-     */
-    public
-    function getName()
-    {
-        return 'core_twig_menu_extension';
+        return $menu;
     }
 }
