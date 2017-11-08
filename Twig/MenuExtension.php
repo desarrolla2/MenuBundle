@@ -65,14 +65,6 @@ class MenuExtension extends \Twig_Extension
     }
 
     /**
-     * @return string
-     */
-    public function getName()
-    {
-        return 'core_twig_menu_extension';
-    }
-
-    /**
      * @param string $serviceOrClassName
      * @param string $template
      * @param array $parameters
