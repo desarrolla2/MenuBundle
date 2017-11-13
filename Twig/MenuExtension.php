@@ -77,7 +77,6 @@ class MenuExtension extends \Twig_Extension
 
         $menu = $builder->getMenu();
         $menu = $this->prepareMenu($menu, $parameters);
-
         if ($this->twig->getLoader()->exists(sprintf('MenuBundle:Menu:%s.html.twig', $template))) {
             return $this->twig->render(sprintf('MenuBundle:Menu:%s.html.twig', $template), ['menu' => $menu]);
         }
@@ -155,15 +154,16 @@ class MenuExtension extends \Twig_Extension
     protected function prepareItem(array $item, array $parameters = [])
     {
         $required = [
-            'class',
-            'anchor_class',
-            'anchor_data',
-            'route',
-            'icon',
-            'name',
-            'items',
             'active',
+            'anchor_attr',
+            'anchor_class',
+            'attr',
+            'class',
             'credentials',
+            'icon',
+            'items',
+            'name',
+            'route',
             'route_parameters',
         ];
         foreach ($required as $r) {
@@ -172,7 +172,7 @@ class MenuExtension extends \Twig_Extension
             }
         }
 
-        $arrays = ['items', 'active', 'anchor_data', 'route_parameters'];
+        $arrays = ['active', 'anchor_attr', 'attr', 'items', 'route_parameters',];
         foreach ($arrays as $a) {
             if (!is_array($item[$a])) {
                 $item[$a] = [];
@@ -213,14 +213,14 @@ class MenuExtension extends \Twig_Extension
     protected function prepareMenu(array $menu, array $parameters = [])
     {
         $this->selected = false;
-        $required = ['class', 'items'];
+        $required = ['attr', 'class', 'items'];
         foreach ($required as $r) {
             if (!isset($menu[$r])) {
                 $menu[$r] = false;
             }
         }
 
-        $arrays = ['items'];
+        $arrays = ['attr', 'items'];
         foreach ($arrays as $a) {
             if (!is_array($menu[$a])) {
                 $menu[$a] = [];
