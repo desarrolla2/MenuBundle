@@ -1,6 +1,6 @@
 {% spaceless %}
   <ul class="menu-tabs list-inline {{ menu.class }}"
-  {% for key,value in item.attr %}{{ key }}="{{ value }}"{% endfor %}>
+  {% for key,value in menu.attr %}{{ key }}="{{ value }}"{% endfor %}>
   {% for item in menu.items %}
     {% set item = item|merge({'anchor_class': 'btn btn-app ' ~ item.anchor_class}) %}
     {% include 'MenuBundle:Menu:item.html.twig' %}
