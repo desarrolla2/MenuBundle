@@ -120,7 +120,7 @@ class MenuExtension extends \Twig_Extension
 
     /**
      * @param string $serviceOrClassName
-     * @return object
+     * @return MenuInterface
      */
     protected function getService(string $serviceOrClassName): MenuInterface
     {
