@@ -67,11 +67,11 @@ class MenuExtension extends \Twig_Extension
     /**
      * @param string $serviceOrClassName
      * @param string $template
-     * @param array $parameters
+     * @param array  $parameters
      *
      * @return string
      */
-    public function render(string $serviceOrClassName, string $template, array $parameters = [])
+    public function render(string $serviceOrClassName, string $template = 'sidebar', array $parameters = [])
     {
         $builder = $this->getService($serviceOrClassName);
 
@@ -120,7 +120,7 @@ class MenuExtension extends \Twig_Extension
 
     /**
      * @param string $serviceOrClassName
-     * @return object
+     * @return MenuInterface
      */
     protected function getService(string $serviceOrClassName): MenuInterface
     {
