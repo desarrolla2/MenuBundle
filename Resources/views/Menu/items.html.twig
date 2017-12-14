@@ -7,7 +7,8 @@
     {% if item.icon %}
       <em class="{{ item.icon }}" aria-hidden="true"></em>
     {% endif %}
-    {{ item.name|trans|capitalize }}
+    <span>{{ item.name|trans|capitalize }}</span>
+    </a>
     <span class="pull-right-container">
       <i class="fa fa-angle-left pull-right" aria-hidden="true" style="margin-right: 5px"> </i>
       <span class="sr-only">Expand</span>
