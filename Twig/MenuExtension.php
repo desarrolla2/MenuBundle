@@ -213,7 +213,7 @@ class MenuExtension extends \Twig_Extension
     protected function prepareMenu(array $menu, array $parameters = [])
     {
         $this->selected = false;
-        $required = ['attr', 'class', 'items'];
+        $required = ['attr', 'class', 'items', 'use_span',];
         foreach ($required as $r) {
             if (!isset($menu[$r])) {
                 $menu[$r] = false;

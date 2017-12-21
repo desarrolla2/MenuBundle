@@ -7,7 +7,7 @@
     {% if item.icon %}
       <em class="{{ item.icon }}" aria-hidden="true"></em>
     {% endif %}
-    <span>{{ item.name|trans|capitalize }}</span>
+    {% if menu.use_span %}<span>{% endif %}{{ item.name|trans|capitalize }}{% if menu.use_span %}</span>{% endif %}
     </a>
     </li>
   {% endspaceless %}
