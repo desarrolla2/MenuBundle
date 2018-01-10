@@ -1,5 +1,5 @@
-{% if not item.credentials or is_granted(item.credentials) %}
-  {% spaceless %}
+{% spaceless %}
+  {% if not item.credentials or is_granted(item.credentials) %}
     <li class="treeview {{ item.class }} {% if item.selected %}active{% endif %}{% if loop.first %} first{% endif %}
     {% if loop.last %} last{% endif %}" {% for key,value in item.attr %}{{ key }}="{{ value }}"{% endfor %}>
     <a href="{{ item.link }}" class="{{ item.anchor_class }}"
@@ -8,11 +8,11 @@
       <em class="{{ item.icon }}" aria-hidden="true"></em>
     {% endif %}
     {% if menu.use_span %}<span>{% endif %}{{ item.name|trans|capitalize }}{% if menu.use_span %}</span>{% endif %}
-    </a>
     <span class="pull-right-container">
       <em class="fa fa-angle-left pull-right" aria-hidden="true" style="margin-right: 5px"> </em>
       <span class="sr-only">Expand</span>
     </span>
+    </a>
     <ul class="treeview-menu">
       {% for item in item.items %}
         {% if item.items|length %}
@@ -22,7 +22,6 @@
         {% endif %}
       {% endfor %}
     </ul>
-    </a>
     </li>
-  {% endspaceless %}
-{% endif %}
+  {% endif %}
+{% endspaceless %}

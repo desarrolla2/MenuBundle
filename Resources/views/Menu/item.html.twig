@@ -1,5 +1,5 @@
-{% if not item.credentials or is_granted(item.credentials) %}
-  {% spaceless %}
+{% spaceless %}
+  {% if not item.credentials or is_granted(item.credentials) %}
     <li class="{{ item.class }} {% if item.selected %} active{% endif %}{% if loop.first %} first{% endif %}
     {% if loop.last %} last{% endif %}" {% for key,value in item.attr %}{{ key }}="{{ value }}"{% endfor %}>
     <a href="{{ item.link }}" class="{{ item.anchor_class }}"
@@ -10,5 +10,5 @@
     {% if menu.use_span %}<span>{% endif %}{{ item.name|trans|capitalize }}{% if menu.use_span %}</span>{% endif %}
     </a>
     </li>
-  {% endspaceless %}
-{% endif %}
+  {% endif %}
+{% endspaceless %}

@@ -85,40 +85,6 @@ class MenuExtension extends \Twig_Extension
     }
 
     /**
-     * @param array $item
-     *
-     * @return bool
-     */
-    private function isSelected(array $item)
-    {
-        if ($this->selected) {
-            return false;
-        }
-
-        if ($this->route == $item['route']) {
-            $this->selected = true;
-
-            return true;
-        }
-
-        if (in_array($this->route, $item['active'])) {
-            $this->selected = true;
-
-            return true;
-        }
-
-        foreach ($item['active'] as $active) {
-            if (preg_match(sprintf('#%s#', $active), $this->route) === 1) {
-                $this->selected = true;
-
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    /**
      * @param string $serviceOrClassName
      * @return MenuInterface
      */
@@ -240,5 +206,39 @@ class MenuExtension extends \Twig_Extension
         }
 
         return $menu;
+    }
+
+    /**
+     * @param array $item
+     *
+     * @return bool
+     */
+    private function isSelected(array $item)
+    {
+        if ($this->selected) {
+            return false;
+        }
+
+        if ($this->route == $item['route']) {
+            $this->selected = true;
+
+            return true;
+        }
+
+        if (in_array($this->route, $item['active'])) {
+            $this->selected = true;
+
+            return true;
+        }
+
+        foreach ($item['active'] as $active) {
+            if (preg_match(sprintf('#%s#', $active), $this->route) === 1) {
+                $this->selected = true;
+
+                return true;
+            }
+        }
+
+        return false;
     }
 }
