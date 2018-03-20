@@ -1,0 +1,8 @@
+{% spaceless %}
+  <ul class="menu-list list-inline {{ menu.class }}"
+  {% for key,value in menu.attr %}{{ key }}="{{ value }}"{% endfor %}>
+  {% for item in menu.items %}
+    {% include 'MenuBundle:Menu:item.html.twig' %}
+  {% endfor %}
+  </ul>
+{% endspaceless %}
