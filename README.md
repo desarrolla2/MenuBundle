@@ -65,19 +65,18 @@ class MainMenu implements MenuInterface
                 [
                     'name' => 'Users',
                     'icon' => 'fa fa-user',
-
                     'items' => [
                         [
                             'name' => 'Admins',
                             'route' => 'admin_core_user_admin_list',
-                            'active' => [
+                            'active_routes' => [
                                 'admin_core_user_admin_[\w]+',
                             ],
                         ],
                         [
                             'name' => 'Clients',
                             'route' => 'admin_core_user_client_list',
-                            'active' => [
+                            'active_routes' => [
                                 'admin_core_user_client_[\w]+',
                             ],
                         ],
@@ -87,7 +86,7 @@ class MainMenu implements MenuInterface
                     'name' => 'Groups',
                     'route' => 'admin_core_group_list',
                     'icon' => 'fa fa-users',
-                    'active' => [
+                    'active_routes' => [
                         'admin_core_group_[\w]+',
                         '_admin.group.[\w\.]',
                     ],

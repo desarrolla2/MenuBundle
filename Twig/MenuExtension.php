@@ -67,7 +67,7 @@ class MenuExtension extends \Twig_Extension
     /**
      * @param string $serviceOrClassName
      * @param string $template
-     * @param array  $parameters
+     * @param array $parameters
      *
      * @return string
      */
@@ -121,6 +121,8 @@ class MenuExtension extends \Twig_Extension
     {
         $required = [
             'active',
+            'active_routes',
+            'active_parameters',
             'anchor_attr',
             'anchor_class',
             'attr',
@@ -138,12 +140,15 @@ class MenuExtension extends \Twig_Extension
             }
         }
 
-        $arrays = ['active', 'anchor_attr', 'attr', 'items', 'route_parameters',];
+        $arrays = ['active', 'active_routes', 'active_parameters', 'anchor_attr', 'attr', 'items', 'route_parameters',];
         foreach ($arrays as $a) {
             if (!is_array($item[$a])) {
                 $item[$a] = [];
             }
         }
+
+        $item['active_routes'] = array_merge($item['active'], $item['active_routes']);
+        unset($item['active']);
 
         $parameters = array_merge($item['route_parameters'], $parameters);
 
@@ -220,22 +225,26 @@ class MenuExtension extends \Twig_Extension
         }
 
         if ($this->route == $item['route']) {
-            $this->selected = true;
-
-            return true;
+            if (!count($item['active_parameters'])) {
+                return $this->selected = true;
+            }
+            foreach ($item['active_parameters'] as $key => $value) {
+                if ($this->request->get($key) == $value) {
+                    return $this->selected = true;
+                }
+            }
         }
 
-        if (in_array($this->route, $item['active'])) {
-            $this->selected = true;
-
-            return true;
-        }
-
-        foreach ($item['active'] as $active) {
+        foreach ($item['active_routes'] as $active) {
             if (preg_match(sprintf('#%s#', $active), $this->route) === 1) {
-                $this->selected = true;
-
-                return true;
+                if (!count($item['active_parameters'])) {
+                    return $this->selected = true;
+                }
+                foreach ($item['active_parameters'] as $key => $value) {
+                    if ($this->request->get($key) == $value) {
+                        return $this->selected = true;
+                    }
+                }
             }
         }
 
